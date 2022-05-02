@@ -8,8 +8,8 @@ const galleryItemsMarkup = createGalleryItemsMarkup(galleryItems);
 
 gallery.insertAdjacentHTML("beforeend", galleryItemsMarkup);
 
-const itemOnclick = handleItemOnclick(e);
-gallery.addEventListener("click", itemOnclick);
+// const itemOnclick = handleItemOnclick(e);
+gallery.addEventListener("click", handleItemOnclick);
 
 function createGalleryItemsMarkup(galleryItems) {
   return galleryItems
@@ -33,18 +33,35 @@ function createGalleryItemsMarkup(galleryItems) {
 function handleItemOnclick(e) {
   if (e.target.closest(".gallery__link")) {
     e.preventDefault();
-    const instance = basicLightbox.create(`
+    const instance = basicLightbox.create(
+      `
       <img src="${
         e.target.closest("img").dataset.source
       }" width="800" height="600">"
-    `);
+    `,
+      {
+        closable: true,
+        onShow: (instance) => {
+          window.addEventListener("keydown", onModalPressEsc);
+        },
+        onClose: (instance) => {
+          window.removeEventListener("keydown", onModalPressEsc);
+        },
+      }
+    );
     instance.show();
   }
 }
 
+function onModalPressEsc(e) {
+  if (e.code === "Escape") {
+    instance.close();
+  }
+}
+
 // function handleItemOnclick(e) {
+//   e.preventDefault();
 //   if (!e.target.classList.contains(".gallery__image")) {
-//     e.preventDefault();
 //     return;
 //   }
 
