@@ -50,12 +50,12 @@ function handleItemOnclick(e) {
       }
     );
     instance.show();
-  }
-}
 
-function onModalPressEsc(e) {
-  if (e.code === "Escape") {
-    instance.close();
+    function onModalPressEsc(e) {
+      if (e.code === "Escape") {
+        instance.close();
+      }
+    }
   }
 }
 
