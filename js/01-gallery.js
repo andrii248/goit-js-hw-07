@@ -8,17 +8,15 @@ const galleryItemsMarkup = createGalleryItemsMarkup(galleryItems);
 
 gallery.insertAdjacentHTML("beforeend", galleryItemsMarkup);
 
-gallery.addEventListener("click", handleItemOnclick);
+const itemOnclick = handleItemOnclick(e);
+gallery.addEventListener("click", itemOnclick);
 
-// document.querySelector("a").addEventListener("click", function (event) {
-//   event.preventDefault();
-// });
 function createGalleryItemsMarkup(galleryItems) {
   return galleryItems
     .map(({ preview, original, description }) => {
       return `
     <div class="gallery__item">
-    <a class="gallery__link" href="${original}" onclick="event.preventDefault()">
+    <a class="gallery__link" href="${original}">
     <img
         class="gallery__image"
         src="${preview}"
@@ -31,10 +29,27 @@ function createGalleryItemsMarkup(galleryItems) {
     })
     .join("");
 }
-function handleItemOnclick(e) {
-  if (!e.target.classList.contains("gallery__image")) {
-    return;
-  }
 
-  console.log(e.target.dataset.source);
+function handleItemOnclick(e) {
+  if (e.target.closest(".gallery__link")) {
+    e.preventDefault();
+    const instance = basicLightbox.create(`
+      <img src="${
+        e.target.closest("img").dataset.source
+      }" width="800" height="600">"
+    `);
+    instance.show();
+  }
 }
+
+// function handleItemOnclick(e) {
+//   if (!e.target.classList.contains(".gallery__image")) {
+//     e.preventDefault();
+//     return;
+//   }
+
+//   const instance = basicLightbox.create(`
+//     <img src="${e.target.dataset.source}" width="800" height="600">"
+//     `);
+//   instance.show();
+// }
