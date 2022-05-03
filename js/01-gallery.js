@@ -9,7 +9,7 @@ const galleryItemsMarkup = createGalleryItemsMarkup(galleryItems);
 gallery.insertAdjacentHTML("beforeend", galleryItemsMarkup);
 
 // const itemOnclick = handleItemOnclick(e);
-gallery.addEventListener("click", handleItemOnclick);
+gallery.addEventListener("click", onImgClick);
 
 function createGalleryItemsMarkup(galleryItems) {
   return galleryItems
@@ -30,34 +30,70 @@ function createGalleryItemsMarkup(galleryItems) {
     .join("");
 }
 
-function handleItemOnclick(e) {
-  if (e.target.closest(".gallery__link")) {
-    e.preventDefault();
-    const instance = basicLightbox.create(
-      `
-      <img src="${
-        e.target.closest("img").dataset.source
-      }" width="800" height="600">"
-    `,
-      {
-        closable: true,
-        onShow: (instance) => {
-          window.addEventListener("keydown", onModalPressEsc);
-        },
-        onClose: (instance) => {
-          window.removeEventListener("keydown", onModalPressEsc);
-        },
-      }
-    );
-    instance.show();
+const instance = basicLightbox.create(
+  `<img class="modal-img" src="">`,
+  {
+    onShow: (instance) => {
+      window.addEventListener("keydown", onEscClick);
+    },
+  },
+  {
+    onClose: (instance) => {
+      window.removeEventListener("keydown", onEscClick);
+    },
+  }
+);
 
-    function onModalPressEsc(e) {
-      if (e.code === "Escape") {
-        instance.close();
-      }
-    }
+function onImgClick(evt) {
+  evt.preventDefault();
+  if (evt.target.nodeName !== "IMG") {
+    return;
+  }
+  instance.element().querySelector(".modal-img").src =
+    evt.target.dataset.source;
+
+  instance.show();
+}
+
+function onEscClick(evt) {
+  if (evt.key === "Escape") {
+    instance.close();
+    return;
   }
 }
+
+// ================ initial working realization ==================
+
+// function handleItemOnclick(e) {
+//   if (e.target.closest(".gallery__link")) {
+//     e.preventDefault();
+//     const instance = basicLightbox.create(
+//       `
+//       <img src="${
+//         e.target.closest("img").dataset.source
+//       }" width="800" height="600">"
+//     `,
+//       {
+//         closable: true,
+//         onShow: (instance) => {
+//           window.addEventListener("keydown", onModalPressEsc);
+//         },
+//         onClose: (instance) => {
+//           window.removeEventListener("keydown", onModalPressEsc);
+//         },
+//       }
+//     );
+//     instance.show();
+
+//     function onModalPressEsc(e) {
+//       if (e.code === "Escape") {
+//         instance.close();
+//       }
+//     }
+//   }
+// }
+
+// ============== not working code =======
 
 // function handleItemOnclick(e) {
 //   e.preventDefault();
